@@ -15,18 +15,37 @@ const defaultItems = [
 
 function Carousel3D({ items = defaultItems, interval = 3000 }: Carousel3DProps) {
   const [positions, setPositions] = useState(['pos-1', 'pos-2', 'pos-3', 'pos-4', 'pos-5'])
-  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set())
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set([2])) // 预加载当前显示的图片
   const carouselSectionRef = useRef<HTMLElement>(null)
   const intervalIdRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const intersectionObserverRef = useRef<IntersectionObserver | null>(null)
+
+  // 预加载下一张图片
+  const preloadNextImage = useCallback((currentIndex: number) => {
+    const nextIndex = (currentIndex + 1) % items.length
+    const prevIndex = (currentIndex - 1 + items.length) % items.length
+
+    setLoadedImages(prev => {
+      const newSet = new Set(prev)
+      newSet.add(currentIndex)
+      newSet.add(nextIndex)
+      newSet.add(prevIndex)
+      return newSet
+    })
+  }, [items.length])
 
   const rotateCarousel = useCallback(() => {
     setPositions(prev => {
       const newPositions = [...prev]
       newPositions.unshift(newPositions.pop()!)
+
+      // 计算当前显示的图片索引（pos-3 是当前显示的图片）
+      const currentIndex = newPositions.indexOf('pos-3')
+      preloadNextImage(currentIndex)
+
       return newPositions
     })
-  }, [])
+  }, [preloadNextImage])
 
   const startCarousel = useCallback(() => {
     if (intervalIdRef.current) return
@@ -40,6 +59,8 @@ function Carousel3D({ items = defaultItems, interval = 3000 }: Carousel3DProps) 
   }, [])
 
   useEffect(() => {
+    // 预加载前3张图片
+    setLoadedImages(new Set([0, 1, 2]))
     startCarousel()
 
     if ('IntersectionObserver' in window && carouselSectionRef.current) {
@@ -81,6 +102,9 @@ function Carousel3D({ items = defaultItems, interval = 3000 }: Carousel3DProps) 
     setLoadedImages(prev => new Set(prev).add(index))
   }
 
+  // 获取当前显示的图片索引
+  const currentIndex = positions.indexOf('pos-3')
+
   return (
     <section className="carousel-section" ref={carouselSectionRef}>
       <div className="carousel-container">
@@ -96,8 +120,8 @@ function Carousel3D({ items = defaultItems, interval = 3000 }: Carousel3DProps) 
             <img
               src={item}
               alt=""
-              loading={index === 2 ? 'eager' : 'lazy'}
-              decoding="async"
+              loading={index <= 2 ? 'eager' : 'lazy'}
+              decoding={index === currentIndex ? 'sync' : 'async'}
               onLoad={() => handleImageLoad(index)}
               style={{
                 position: 'absolute',

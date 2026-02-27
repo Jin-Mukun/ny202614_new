@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 
 interface VideoPlayerProps {
   currentSrc?: string
@@ -7,31 +7,59 @@ interface VideoPlayerProps {
 
 function VideoPlayer({ currentSrc, currentTitle }: VideoPlayerProps) {
   const videoRef = useRef<HTMLVideoElement>(null)
+  const sectionRef = useRef<HTMLElement>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [isError, setIsError] = useState(false)
   const [showRetry, setShowRetry] = useState(false)
   const [loadingStatus, setLoadingStatus] = useState('准备就绪')
   const [loadingProgress, setLoadingProgress] = useState(0)
+  const [isInViewport, setIsInViewport] = useState(false)
 
   const progressRafRef = useRef<number | null>(null)
   const progressLastUpdateRef = useRef(0)
 
-  const retryLoad = () => {
-    if (videoRef.current) {
-      videoRef.current.load()
-      setIsError(false)
-      setShowRetry(false)
-      setLoadingStatus('正在加载...')
-    }
-  }
-
+  // Intersection Observer - 只在视频进入视口时加载
   useEffect(() => {
+    const section = sectionRef.current
+    if (!section) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInViewport(entry.isIntersecting)
+      },
+      { threshold: 0.1, rootMargin: '100px' }
+    )
+
+    observer.observe(section)
+    return () => observer.disconnect()
+  }, [])
+
+  // 当视频进入视口且 src 变化时，开始加载
+  useEffect(() => {
+    if (!isInViewport || !currentSrc) return
+
+    const video = videoRef.current
+    if (!video) return
+
     setIsLoading(true)
     setIsError(false)
     setShowRetry(false)
     setLoadingStatus('正在加载...')
     setLoadingProgress(0)
-  }, [currentSrc])
+
+    video.src = currentSrc
+    video.load()
+  }, [isInViewport, currentSrc])
+
+  const retryLoad = useCallback(() => {
+    const video = videoRef.current
+    if (!video) return
+
+    video.load()
+    setIsError(false)
+    setShowRetry(false)
+    setLoadingStatus('正在加载...')
+  }, [])
 
   const onLoadStart = () => {
     setIsLoading(true)
@@ -128,20 +156,8 @@ function VideoPlayer({ currentSrc, currentTitle }: VideoPlayerProps) {
     setLoadingStatus(errorMsg)
   }
 
-  const onSuspend = () => {
-    console.log('视频加载被浏览器暂停')
-  }
-
-  const onAbort = () => {
-    console.log('视频加载被中止')
-    if (!isError) {
-      setIsLoading(false)
-      setLoadingStatus('加载已取消')
-    }
-  }
-
   return (
-    <section id="video" className="video-section">
+    <section id="video" className="video-section" ref={sectionRef}>
       <h2 className="section-title">
         <span className="title-icon">播放视频</span>
       </h2>
@@ -154,10 +170,9 @@ function VideoPlayer({ currentSrc, currentTitle }: VideoPlayerProps) {
           ref={videoRef}
           controls
           controlsList="nodownload"
-          preload="metadata"
+          preload="none"
           playsInline
           autoPlay={currentSrc !== 'videos/video1.mp4'}
-          src={currentSrc}
           onContextMenu={(e) => e.preventDefault()}
           onLoadStart={onLoadStart}
           onProgress={onProgress}
@@ -168,8 +183,6 @@ function VideoPlayer({ currentSrc, currentTitle }: VideoPlayerProps) {
           onEnded={onEnded}
           onError={onError}
           onCanPlayThrough={onCanPlayThrough}
-          onSuspend={onSuspend}
-          onAbort={onAbort}
         >
           您的浏览器不支持视频播放，请使用现代浏览器。
         </video>

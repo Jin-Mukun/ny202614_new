@@ -1,9 +1,23 @@
 import { useRef, useCallback } from 'react'
 import Carousel3D from '../components/Carousel3D'
 import { Link } from 'react-router-dom'
+import { usePriorityPreloader } from '../hooks/useImagePreloader'
+
+// 首页优先加载的图片
+const priorityImages = [
+  'images/image1.jpg',
+  'images/image2.jpg',
+  'images/image3.jpg',
+  'images/image4.jpg',
+  'images/image5.jpg',
+  'images/home/logo.jpg'
+]
 
 function HomeView() {
   const entranceRef = useRef<HTMLDivElement>(null)
+  
+  // 优先预加载首页关键图片
+  usePriorityPreloader(priorityImages)
 
   const scrollToContent = useCallback(() => {
     const target = entranceRef.current
