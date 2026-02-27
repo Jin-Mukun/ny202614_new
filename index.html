@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="NY 2026.14班宣传网站">
+  <title>NY 2026.14班宣传网站</title>
+  <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" href="/images/home/logo.jpg" as="image">
+  <link rel="preload" href="/images/home/home1.png" as="image">
+  <style>
+    /* Noscript 样式 */
+    .noscript-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .noscript-box {
+      max-width: 720px;
+      background: #111827;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      font-size: 16px;
+      color: #f9fafb;
+    }
+
+    .noscript-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #3b82f6, #ec4899);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .noscript-close {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color: white;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: transform 0.2s;
+    }
+
+    .noscript-close:hover {
+      transform: translateY(-2px);
+    }
+
+    /* 强制在禁用 JS 时显示遮罩，禁止继续访问（移除了通过 fragment 隐藏遮罩的规则） */
+  </style>
+</head>
+
+<body>
+  <noscript>
+    <div class="noscript-overlay">
+      <div class="noscript-box" role="dialog" aria-live="assertive">
+        <div class="noscript-title">检测到未启用 JavaScript</div>
+        <div>禁用 JavaScript 时无法访问本站。</div>
+      </div>
+    </div>
+  </noscript>
+
+  <div id="root"></div>
+
+  <script type="module" src="/src/main.tsx"></script>
+</body>
+
+</html>
