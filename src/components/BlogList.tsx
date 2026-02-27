@@ -1,10 +1,11 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { articles } from '../data/articles'
 import type { Article } from '../types'
 
 function BlogList() {
   const navigate = useNavigate()
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set())
 
   const sortedArticles = useMemo<Article[]>(() => {
     return [...articles].sort((a, b) => {
@@ -18,10 +19,14 @@ function BlogList() {
     navigate(`/blog/${id}`)
   }
 
+  const handleImageLoad = (id: number) => {
+    setLoadedImages(prev => new Set(prev).add(id))
+  }
+
   return (
     <div className="blog-list-container">
       <div className="blog-grid">
-        {sortedArticles.map((article) => (
+        {sortedArticles.map((article, index) => (
           <article
             key={article.id}
             className={`blog-card ${article.pinned ? 'pinned-card' : ''}`}
@@ -33,11 +38,17 @@ function BlogList() {
                   src={article.image}
                   className="blog-image"
                   alt="文章配图"
-                  loading="lazy"
+                  loading={index < 2 ? 'eager' : 'lazy'}
+                  decoding="async"
+                  onLoad={() => handleImageLoad(article.id)}
+                  style={{
+                    opacity: loadedImages.has(article.id) ? 1 : 0,
+                    transition: 'opacity 0.3s ease'
+                  }}
                 />
               ) : (
                 <div className="blog-image-placeholder">
-                  <span className="image-icon">📄</span>
+                  <span className="image-icon">文章</span>
                 </div>
               )}
             </div>

@@ -29,8 +29,7 @@ function VideoList({ onSelectVideo }: VideoListProps) {
   return (
     <section className="video-list-section">
       <h2 className="section-title">
-        <span className="title-icon">📹</span>
-        视频列表
+        <span className="title-icon">视频列表</span>
       </h2>
       <div className="video-list">
         {videos.map((video) => (
@@ -47,7 +46,7 @@ function VideoList({ onSelectVideo }: VideoListProps) {
               <span className="play-icon">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                   <path d="M8 5v14l11-7z"/>
-                </svg>
+                </svg> 
               </span>
             </div>
             <div className="video-item-content">

@@ -15,6 +15,7 @@ const defaultItems = [
 
 function Carousel3D({ items = defaultItems, interval = 3000 }: Carousel3DProps) {
   const [positions, setPositions] = useState(['pos-1', 'pos-2', 'pos-3', 'pos-4', 'pos-5'])
+  const [loadedImages, setLoadedImages] = useState<Set<number>>(new Set())
   const carouselSectionRef = useRef<HTMLElement>(null)
   const intervalIdRef = useRef<ReturnType<typeof setInterval> | null>(null)
   const intersectionObserverRef = useRef<IntersectionObserver | null>(null)
@@ -76,6 +77,10 @@ function Carousel3D({ items = defaultItems, interval = 3000 }: Carousel3DProps) 
     }
   }, [startCarousel, stopCarousel])
 
+  const handleImageLoad = (index: number) => {
+    setLoadedImages(prev => new Set(prev).add(index))
+  }
+
   return (
     <section className="carousel-section" ref={carouselSectionRef}>
       <div className="carousel-container">
@@ -83,8 +88,26 @@ function Carousel3D({ items = defaultItems, interval = 3000 }: Carousel3DProps) 
           <div
             key={index}
             className={`carousel-item ${positions[index]}`}
-            style={{ backgroundImage: `url(${item})` }}
-          />
+            style={{
+              backgroundImage: loadedImages.has(index) ? `url(${item})` : 'none',
+              backgroundColor: '#f1f5f9'
+            }}
+          >
+            <img
+              src={item}
+              alt=""
+              loading={index === 2 ? 'eager' : 'lazy'}
+              decoding="async"
+              onLoad={() => handleImageLoad(index)}
+              style={{
+                position: 'absolute',
+                width: 0,
+                height: 0,
+                opacity: 0,
+                pointerEvents: 'none'
+              }}
+            />
+          </div>
         ))}
       </div>
     </section>

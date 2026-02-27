@@ -230,7 +230,7 @@ const hello = 'world';
 
 ## 联系与反馈
 
-- 仓库地址: https://github.com/Jin-Mukun/ny202614
+- 仓库地址: https://github.com/Jin-Mukun/ny202614_new
 - 问题反馈: 在仓库中提交 Issue
 - 开源协议: 欢迎贡献代码，请遵循 MIT 协议
 

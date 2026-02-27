@@ -87,7 +87,7 @@ function HomeView() {
           </div>
 
           <div className="github-link">
-            <a href="https://github.com/Jin-Mukun/ny202614" target="_blank" rel="noopener noreferrer">
+            <a href="https://github.com/Jin-Mukun/ny202614_new" target="_blank" rel="noopener noreferrer">
               <img src="/images/home/home1.png" alt="GitHub" className="github-icon" loading="lazy" />
               <span className="github-text">本网站开源至Github，欢迎贡献代码</span>
               <svg className="external-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

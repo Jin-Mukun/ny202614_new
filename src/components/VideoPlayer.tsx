@@ -143,8 +143,7 @@ function VideoPlayer({ currentSrc, currentTitle }: VideoPlayerProps) {
   return (
     <section id="video" className="video-section">
       <h2 className="section-title">
-        <span className="title-icon">🎬</span>
-        播放视频
+        <span className="title-icon">播放视频</span>
       </h2>
       <div className="video-player">
         <div className="video-header-overlay">
@@ -155,7 +154,7 @@ function VideoPlayer({ currentSrc, currentTitle }: VideoPlayerProps) {
           ref={videoRef}
           controls
           controlsList="nodownload"
-          preload="auto"
+          preload="metadata"
           playsInline
           autoPlay={currentSrc !== 'videos/video1.mp4'}
           src={currentSrc}
