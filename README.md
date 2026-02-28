@@ -171,10 +171,10 @@ pinned: true  # 是否置顶（可选）
 
 > 引用块
 
-```javascript
+\`\`\`javascript
 // 代码块
 const hello = 'world';
-```
+\`\`\`
 ```
 
 ### 添加轮播图片
